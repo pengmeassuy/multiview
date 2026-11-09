@@ -1,4 +1,5 @@
-// Vercel serverless function: looks up channel names, pictures and live status
+// Vercel serverless function: looks up channel names, pictures and live status.
+// The API key lives in the YT_KEY environment variable, never in the repo.
 module.exports = async (req, res) => {
     const key = process.env.YT_KEY;
     const ids = String(req.query.ids || "")

@@ -18,7 +18,9 @@ const INFO_MS = 300000;         // refresh pictures + LIVE badges every 5 minute
 // API_KEY comes from config.js (loaded before this file). Without it the app
 // still works, with letters instead of pictures.
 const KEY = typeof API_KEY === "undefined" ? "" : API_KEY;
-// on the deployed site the key lives on the server; locally we use config.js
+
+// On the deployed site the key lives on the server (api/info.js), so the page
+// asks that function. Locally (Live Server) it uses config.js directly.
 const USE_PROXY = location.hostname !== "127.0.0.1" && location.hostname !== "localhost";
 
 
@@ -73,7 +75,7 @@ async function getName(id, fallback) {
 // takes up to 50 video IDs, returns { videoId: { channel, avatar, live } }
 async function getInfo(ids) {
     if (!ids.length) return {};
-    if (USE_PROXY){
+    if (USE_PROXY) {
         try { return await fetchJson(`/api/info?ids=${ids.join(",")}`); }
         catch (e) { return {}; }
     }
