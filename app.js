@@ -18,6 +18,8 @@ const INFO_MS = 300000;         // refresh pictures + LIVE badges every 5 minute
 // API_KEY comes from config.js (loaded before this file). Without it the app
 // still works, with letters instead of pictures.
 const KEY = typeof API_KEY === "undefined" ? "" : API_KEY;
+// on the deployed site the key lives on the server; locally we use config.js
+const USE_PROXY = location.hostname !== "127.0.0.1" && location.hostname !== "localhost";
 
 
 // ===== 2. HELPERS ====================================================
@@ -70,7 +72,12 @@ async function getName(id, fallback) {
 
 // takes up to 50 video IDs, returns { videoId: { channel, avatar, live } }
 async function getInfo(ids) {
-    if (!KEY || !ids.length) return {};
+    if (!ids.length) return {};
+    if (USE_PROXY){
+        try { return await fetchJson(`/api/info?ids=${ids.join(",")}`); }
+        catch (e) { return {}; }
+    }
+    if (!KEY) return {};
     const base = "https://www.googleapis.com/youtube/v3";
     try {
         const v = await fetchJson(
